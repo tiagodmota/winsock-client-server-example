@@ -4,7 +4,7 @@
 #include <windows.h>
 #include <ws2tcpip.h>
 
-#define RECV_BUFFER_SIZE (size_t)512
+#define RECV_BUFFER_SIZE (size_t) 512
 #define SERVER_PORT "27015"
 #define SERVER_IP "127.0.0.1"
 
@@ -21,7 +21,7 @@ int main(void)
     status = WSAStartup(MAKEWORD(2, 2), &wsaData);
     if (status != 0)
     {
-        printf("WSAStartup() falhou com o seguinte código de erro: %d\n", status);
+        printf("WSAStartup() falhou com o seguinte codigo de erro: %d\n", status);
         system("pause");
         return EXIT_FAILURE;
     }
@@ -32,7 +32,7 @@ int main(void)
     
     SOCKET serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (serverSocket == INVALID_SOCKET) {
-        printf("Criação do socket falhou com o erro: %d\n", WSAGetLastError());
+        printf("Criacao do socket falhou com o erro: %d\n", WSAGetLastError());
         WSACleanup();
         return 1;
     }
@@ -45,7 +45,7 @@ int main(void)
     
     status = bind(serverSocket, &sockAddrInfo, sizeof(sockAddrInfo));
     if (status == SOCKET_ERROR) {
-        printf("Não foi possível fazer o bind() do socket servidor. Código de erro: %d\n", WSAGetLastError());
+        printf("Nao foi possivel fazer o bind() do socket servidor. Codigo de erro: %d\n", WSAGetLastError());
         closesocket(serverSocket);
         WSACleanup();
         return 1;
@@ -59,18 +59,18 @@ int main(void)
     }
     
     SOCKET clientSocket;
-    printf("Servidor %s aguardando conexão na porta %u...\n", hostname, ntohs(sockAddrInfo.sin_port)); // ¬
+    printf("Servidor %s aguardando conexao na porta %u...\n", hostname, ntohs(sockAddrInfo.sin_port)); // ¬
 
     clientSocket = accept(serverSocket, NULL, NULL);
     if (clientSocket == INVALID_SOCKET) {
-        printf("Erro na aprovação de conexão com o client. Código: %d\n", WSAGetLastError());
+        printf("Erro na aprovacaoo de conexao com o client. Codigo: %d\n", WSAGetLastError());
         closesocket(serverSocket);
         WSACleanup();
         return 1;
     }
 
     printf("\n\n========================================\n");
-    printf("A conexão com o cliente foi estabelecida\n");
+    printf("A conexao com o cliente foi estabelecida\n");
     printf("========================================\n\n");
     char recvbuf[RECV_BUFFER_SIZE];     
     status = 1;
@@ -78,7 +78,7 @@ int main(void)
         status = recv(clientSocket, recvbuf, RECV_BUFFER_SIZE, 0);
         printf("Msg do cliente: %s\n", recvbuf);
     }
-    printf("\nConexão interrompida por algum motivo aí. Vovê e te aviso...\n");
+    printf("\nConexao interrompida por algum motivo ai. Vou ver e te aviso...\n");
     closesocket(serverSocket);
     closesocket(clientSocket);
     WSACleanup();
