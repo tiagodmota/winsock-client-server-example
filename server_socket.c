@@ -50,6 +50,6 @@ void showHostIp(char *hostname)
     for (int i = 0; hostInfos->h_addr_list[i] != 0; ++i)
     {
         memcpy(&ip_addr, hostInfos->h_addr_list[i], sizeof(struct in_addr));
-        printf("Servidor: Meu endereco IP (%d): %s\n", i, inet_ntoa(ip_addr));
+        printf("Servidor: Meu endereco IP [%d]: %s\n", i, inet_ntoa(ip_addr));
     }
 }
