@@ -61,7 +61,7 @@ int main(void)
     SOCKET clientSocket;
     printf("Servidor %s aguardando conexao na porta %u...\n", hostname, ntohs(serverSockAddrInfo.sin_port)); // ¬
 
-    clientSocket = accept(serverSocket, (struct sockaddr*)&serverSockAddrInfo, sizeof(serverSockAddrInfo));
+    clientSocket = accept(serverSocket, (struct sockaddr*)&serverSockAddrInfo, &sizeof(serverSockAddrInfo));
     if (clientSocket == INVALID_SOCKET) {
         printf("Erro na aprovacao de conexao com o client. Codigo: %d\n", WSAGetLastError());
         closesocket(serverSocket);
