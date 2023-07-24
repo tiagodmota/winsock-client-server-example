@@ -76,9 +76,9 @@ int main(void)
     status = 1;
     while (status > 0) {
         status = recv(clientSocket, recvbuf, RECV_BUFFER_SIZE, 0);
-        printf("%s", recvbuf);
+        printf("Msg do cliente: %s\n", recvbuf);
     }
-    printf("Conexão interrompida por algum motivo aí. Vovê e te aviso...");
+    printf("\nConexão interrompida por algum motivo aí. Vovê e te aviso...\n");
     closesocket(serverSocket);
     closesocket(clientSocket);
     WSACleanup();
