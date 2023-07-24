@@ -1,1 +1,1 @@
-- gcc/clang server_socket.c -lws2_32 -o server_socket
+- [gcc|clang] [server|client]_socket.c -lws2_32 -o [server|client]_socket
