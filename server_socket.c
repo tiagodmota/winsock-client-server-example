@@ -40,7 +40,7 @@ int main(void)
     struct sockaddr_in serverSockAddrInfo = {
         .sin_family = AF_INET,
         .sin_port = htons(atoi(SERVER_PORT)), //host to network short
-        .sin_addr = server_ip_addr // .sin_addr.s_addr = inet_addr(SERVER_IP); ou inet_pton(AF_INET, SERVER_IP, &serverSockAddrInfo.sin_addr); ¬
+        .sin_addr.s_addr = inet_addr(SERVER_IP) // ou inet_pton(AF_INET, SERVER_IP, &serverSockAddrInfo.sin_addr); ¬
     }; 
     
     status = bind(serverSocket, (struct sockaddr*)&serverSockAddrInfo, sizeof(serverSockAddrInfo));
@@ -59,7 +59,7 @@ int main(void)
     }
     
     SOCKET clientSocket;
-    printf("Servidor %s aguardando conexao na porta %u...\n", hostname, ntohs(serverSockAddrInfo.sin_port)); // ¬
+    printf("Servidor %s aguardando conexao na porta %u...\n", hostname, ntohs(serverSockAddrInfo.sin_port));
 
     int addrlen = sizeof(serverSockAddrInfo);
     clientSocket = accept(serverSocket, (struct sockaddr*)&serverSockAddrInfo, &addrlen);
@@ -70,9 +70,9 @@ int main(void)
         return 1;
     }
 
-    printf("\n\n========================================\n");
+    printf("\n========================================\n");
     printf("A conexao com o cliente foi estabelecida\n");
-    printf("========================================\n\n");
+    printf("========================================\n");
     char recvbuf[RECV_BUFFER_SIZE];     
     status = 1;
     while (status > 0) {
