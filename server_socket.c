@@ -37,13 +37,13 @@ int main(void)
         return 1;
     }
 
-    struct sockaddr_in sockAddrInfo = {
+    struct sockaddr_in serverSockAddrInfo = {
         .sin_family = AF_INET,
         .sin_port = htons(atoi(SERVER_PORT)), //host to network short
-        .sin_addr = server_ip_addr // .sin_addr.s_addr = inet_addr(SERVER_IP); ou inet_pton(AF_INET, SERVER_IP, &sockAddrInfo.sin_addr); ¬
+        .sin_addr = server_ip_addr // .sin_addr.s_addr = inet_addr(SERVER_IP); ou inet_pton(AF_INET, SERVER_IP, &serverSockAddrInfo.sin_addr); ¬
     }; 
     
-    status = bind(serverSocket, &sockAddrInfo, sizeof(sockAddrInfo));
+    status = bind(serverSocket, (struct sockaddr*)&serverSockAddrInfo, sizeof(serverSockAddrInfo));
     if (status == SOCKET_ERROR) {
         printf("Nao foi possivel fazer o bind() do socket servidor. Codigo de erro: %d\n", WSAGetLastError());
         closesocket(serverSocket);
@@ -52,18 +52,18 @@ int main(void)
     }
 
     status = listen(serverSocket, SOMAXCONN);
-    if (status = SOCKET_ERROR) {
+    if (status == SOCKET_ERROR) {
         printf("listen() falhou com o erro: %d\n", WSAGetLastError());
         WSACleanup();
         return 1;
     }
     
     SOCKET clientSocket;
-    printf("Servidor %s aguardando conexao na porta %u...\n", hostname, ntohs(sockAddrInfo.sin_port)); // ¬
+    printf("Servidor %s aguardando conexao na porta %u...\n", hostname, ntohs(serverSockAddrInfo.sin_port)); // ¬
 
-    clientSocket = accept(serverSocket, NULL, NULL);
+    clientSocket = accept(serverSocket, (struct sockaddr*)&serverSockAddrInfo, sizeof(serverSockAddrInfo));
     if (clientSocket == INVALID_SOCKET) {
-        printf("Erro na aprovacaoo de conexao com o client. Codigo: %d\n", WSAGetLastError());
+        printf("Erro na aprovacao de conexao com o client. Codigo: %d\n", WSAGetLastError());
         closesocket(serverSocket);
         WSACleanup();
         return 1;
