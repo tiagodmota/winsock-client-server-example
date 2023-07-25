@@ -10,10 +10,10 @@
 
 void getHostName(char *hostnameArr);
 void getHostIp(char *hostname);
-void wsaStartup(WSADATA* wsadata);
+void wsaStartup(WSADATA* wsaData);
 
-int sock_status = -1;
 struct in_addr server_ip_addr;
+int sock_status = -1;
 
 int main(void)
 {
@@ -34,7 +34,7 @@ int main(void)
 
     struct sockaddr_in serverSockAddrInfo = {
         .sin_family = AF_INET,
-        .sin_port = htons(atoi(SERVER_PORT)), // host to network short
+        .sin_port = htons(atoi(SERVER_PORT)), //host to network short
         .sin_addr.s_addr = inet_addr(SERVER_IP) // ou inet_pton(AF_INET, SERVER_IP, &serverSockAddrInfo.sin_addr); ¬
     }; 
     
@@ -65,16 +65,17 @@ int main(void)
         return 1;
     }
 
-    printf("\n========================================\n");
-    printf("A conexao com o cliente foi estabelecida\n");
-    printf("========================================\n");
+    printf("\n       ========================================\n");
+    printf("         A conexao foi estabelecida.\n");
+    printf("       ========================================\n");
     char recvbuf[RECV_BUFFER_SIZE];     
     sock_status = 1;
     while (sock_status > 0) {
         sock_status = recv(clientSocket, recvbuf, RECV_BUFFER_SIZE, 0);
-        printf("Recebendo: %s\n", recvbuf);
+        printf("%s\n", recvbuf);
+        ZeroMemory(recvbuf, sizeof(recvbuf));
     }
-    printf("\nConexao interrompida por algum motivo ai. Vou ver e te aviso...\n");
+    printf("\nOps. Conexao interrompida por algum motivo ai. Vou ver e te aviso.\n");
     closesocket(serverSocket);
     closesocket(clientSocket);
     WSACleanup();
