@@ -27,6 +27,9 @@ Modificado por: Tiago Dantas Mota
 struct addrinfo *result = NULL, *ptr = NULL, hintsForGetAddrInfo;    
 struct in_addr ipAddr;
 
+FILE* file = NULL;
+void openFile(FILE* file, char* mode);
+
 int main(void) {
 
     WSADATA wsaData;  // Variavel para o winsock
@@ -109,26 +112,35 @@ int main(void) {
      Estabeleceu conexao com o servidor e pode trocar dados*/
 
     int i = 0;
+    file = fopen(".//data.txt", "r");
+    char* fgetsStatus;
+    ZeroMemory(sendbuf, sizeof(sendbuf));
     while(!kbhit()) {
-        printf("Enviando \"Sou o cliente %s e envio o recado no. %04d\"...\n", hostname, i);                     
+        printf("Recado no. %04d enviado com sucesso!...\n", i);                     
 
         // monta msg com um numero e o nome da maquina em forma de string
-        sprintf(sendbuf, "Sou o cliente %s e envio o recado no. %04d",hostname, i);
-        /*envia a mensagem*/
-        iResult = send(ConnectSocket, sendbuf, (int)strlen(sendbuf), 0);
+        if (file == NULL || fgetsStatus == NULL) {
+            snprintf(sendbuf, BUFFER_TAM, "Cliente %s envia recado no. %04d", hostname, i);
+        } else {
+            fgetsStatus = fgets(sendbuf, BUFFER_TAM, file);
+            sendbuf[strcspn(sendbuf, "\n")] = '\0';
+        }
+
+        // Envia a mensagem, bufferizada
+        iResult = send(ConnectSocket, sendbuf, strlen(sendbuf), 0);
         if (iResult == SOCKET_ERROR) {
-            printf("Falhou o envio com o erro: %d\n", WSAGetLastError());
+            printf("Oops! Falhou o envio com o erro: %d\n", WSAGetLastError());
             closesocket(ConnectSocket);
             WSACleanup();
             system("pause");
             return 1;
         }
         i++;
-        Sleep(1000);
+        Sleep(250);
     }
-
     /********************************************************************/
     /*Encerra a conexao*/
+    fclose(file);
     iResult = shutdown(ConnectSocket, SD_SEND);
     if (iResult == SOCKET_ERROR) {
         printf("Falhou encerrar a conexao com o erro: %d\n", WSAGetLastError());
