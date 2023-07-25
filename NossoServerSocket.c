@@ -70,16 +70,17 @@ int main(void)
         return 1;
     }
 
-    printf("\n========================================\n");
-    printf("A conexao com o cliente foi estabelecida\n");
-    printf("========================================\n");
+    printf("\n       ========================================\n");
+    printf("         A conexao foi estabelecida\n");
+    printf("       ========================================\n");
     char recvbuf[RECV_BUFFER_SIZE];     
     status = 1;
     while (status > 0) {
         status = recv(clientSocket, recvbuf, RECV_BUFFER_SIZE, 0);
-        printf("Msg do cliente: %s\n", recvbuf);
+        printf("%s\n", recvbuf);
+        ZeroMemory(recvbuf, sizeof(recvbuf));
     }
-    printf("\nConexao interrompida por algum motivo ai. Vou ver e te aviso...\n");
+    printf("\nOps. Conexao interrompida por algum motivo ai. Vou ver e te aviso.\n");
     closesocket(serverSocket);
     closesocket(clientSocket);
     WSACleanup();
@@ -100,6 +101,6 @@ void getHostIp(char *hostname)
     for (int i = 0; pHostEnt->h_addr_list[i] != 0; ++i)
     {
         memcpy(&server_ip_addr, pHostEnt->h_addr_list[i], sizeof(struct in_addr));
-        printf("Servidor: Meu endereco IP [%d]: %s\n", i, inet_ntoa(server_ip_addr));
+        printf("Servidor: Meu endereco IP: %s\n", i, inet_ntoa(server_ip_addr));
     }
 }
