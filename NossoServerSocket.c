@@ -10,21 +10,16 @@
 
 void getHostName(char *hostnameArr);
 void getHostIp(char *hostname);
+void wsaStartup(WSADATA* wsadata);
 
+int sock_status = -1;
 struct in_addr server_ip_addr;
 
 int main(void)
 {
 
     WSADATA wsaData;
-    int status = -1;
-    status = WSAStartup(MAKEWORD(2, 2), &wsaData);
-    if (status != 0)
-    {
-        printf("WSAStartup() falhou com o seguinte codigo de erro: %d\n", status);
-        system("pause");
-        return EXIT_FAILURE;
-    }
+    wsaStartup(&wsaData);
     
     char hostname[NI_MAXHOST];
     getHostName(hostname);
@@ -39,20 +34,20 @@ int main(void)
 
     struct sockaddr_in serverSockAddrInfo = {
         .sin_family = AF_INET,
-        .sin_port = htons(atoi(SERVER_PORT)), //host to network short
+        .sin_port = htons(atoi(SERVER_PORT)), // host to network short
         .sin_addr.s_addr = inet_addr(SERVER_IP) // ou inet_pton(AF_INET, SERVER_IP, &serverSockAddrInfo.sin_addr); ¬
     }; 
     
-    status = bind(serverSocket, (struct sockaddr*)&serverSockAddrInfo, sizeof(serverSockAddrInfo));
-    if (status == SOCKET_ERROR) {
+    sock_status = bind(serverSocket, (struct sockaddr*)&serverSockAddrInfo, sizeof(serverSockAddrInfo));
+    if (sock_status == SOCKET_ERROR) {
         printf("Nao foi possivel fazer o bind() do socket servidor. Codigo de erro: %d\n", WSAGetLastError());
         closesocket(serverSocket);
         WSACleanup();
         return 1;
     }
 
-    status = listen(serverSocket, SOMAXCONN);
-    if (status == SOCKET_ERROR) {
+    sock_status = listen(serverSocket, SOMAXCONN);
+    if (sock_status == SOCKET_ERROR) {
         printf("listen() falhou com o erro: %d\n", WSAGetLastError());
         WSACleanup();
         return 1;
@@ -74,10 +69,10 @@ int main(void)
     printf("A conexao com o cliente foi estabelecida\n");
     printf("========================================\n");
     char recvbuf[RECV_BUFFER_SIZE];     
-    status = 1;
-    while (status > 0) {
-        status = recv(clientSocket, recvbuf, RECV_BUFFER_SIZE, 0);
-        printf("Msg do cliente: %s\n", recvbuf);
+    sock_status = 1;
+    while (sock_status > 0) {
+        sock_status = recv(clientSocket, recvbuf, RECV_BUFFER_SIZE, 0);
+        printf("Recebendo: %s\n", recvbuf);
     }
     printf("\nConexao interrompida por algum motivo ai. Vou ver e te aviso...\n");
     closesocket(serverSocket);
@@ -100,6 +95,16 @@ void getHostIp(char *hostname)
     for (int i = 0; pHostEnt->h_addr_list[i] != 0; ++i)
     {
         memcpy(&server_ip_addr, pHostEnt->h_addr_list[i], sizeof(struct in_addr));
-        printf("Servidor: Meu endereco IP [%d]: %s\n", i, inet_ntoa(server_ip_addr));
+        printf("Servidor: Meu endereco IP: %s\n", inet_ntoa(server_ip_addr));
+    }
+}
+
+void wsaStartup(WSADATA* wsaData) {
+    sock_status = WSAStartup(MAKEWORD(2, 2), wsaData);
+    if (sock_status != 0)
+    {
+        printf("WSAStartup() falhou com o seguinte codigo de erro: %d\n", sock_status);
+        system("pause");
+        exit(EXIT_FAILURE);
     }
 }
